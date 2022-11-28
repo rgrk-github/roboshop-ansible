@@ -1,4 +1,4 @@
-- name: test for mongodb 
+- name: test for mongodb
   debug:
     msg: mongodb
 
