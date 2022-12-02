@@ -1,8 +1,4 @@
 
-#    PRINT "Configure MongoDB Listen Address"
-#    sed -i -e 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf &>>$LOG
-#    STAT $?
-#
 #    PRINT "Enable MongoDB"
 #    systemctl enable mongod &>>$LOG
 #    STAT $?
@@ -41,6 +37,12 @@
     path: /etc/mongod.conf
     regexp: '127.0.0.1'
     replace: '0.0.0.0'
+
+- name: Start MongoDB
+  ansible.builtin.systemd:
+    name: mongod
+    state: restarted
+    enabled: yes
 
 
 
