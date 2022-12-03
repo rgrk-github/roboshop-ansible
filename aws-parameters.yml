@@ -5,3 +5,5 @@
       community.aws.aws_ssm_parameter_store:
         name: "param.dev.catalgue.MONGO"
         value: "false"
+        region: "us-east-1"
+        
