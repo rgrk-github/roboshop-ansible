@@ -43,7 +43,7 @@
   ansible.builtin.yum:
     name:
       - mysql-community-server
-      - python39-PyMySQL
+      - python3-PyMySQL
     state: installed
 
 - name: Start MySQL Service
@@ -57,6 +57,13 @@
     login_user: root
     login_password: "{{ROOT_PASSWORD}}"
     filter: version
+  ignore_errors: yes
+  when: out
+
+- name: debug
+  debug:
+    msg: "{{out}}"
+
 
 
 
