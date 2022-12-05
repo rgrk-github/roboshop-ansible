@@ -20,4 +20,9 @@
         - {name: "param.dev.user.MONGO_ENDPOINT", value: "dev-mongodb.devopsb69.online"}
         - {name: "param.dev.user.MONGO_URL", value: "mongodb://dev-mongodb.devopsb69.online:27017/users"}
         - {name: "param.dev.user.REDIS_HOST", value: "dev-redis.devopsb69.online"}
+        - {name: "param.dev.cart.REDIS_HOST", value: "dev-redis.devopsb69.online"}
+        - {name: "param.dev.cart.CATALOGUE_HOST", value: "dev-catalogue.devopsb69.online"}
+        - {name: "param.dev.cart.CATALOGUE_PORT", value: "8080"}
+
+
 
