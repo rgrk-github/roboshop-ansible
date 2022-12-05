@@ -58,7 +58,7 @@
     login_password: "{{ROOT_PASSWORD}}"
     filter: version
   ignore_errors: yes
-  when: out
+  register: out
 
 - name: debug
   debug:
