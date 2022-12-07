@@ -1,4 +1,4 @@
-- name: Install Nginx
+- name: Install Nginx ABCD
   ansible.builtin.yum:
     name: nginx
     state: installed
@@ -7,6 +7,11 @@
   ansible.builtin.include_role:
     name: common
     tasks_from: download-app-code
+
+- name: Copy RoboShop Configuration File
+  ansible.builtin.template:
+    src: roboshop.conf
+    dest: /etc/nginx/default.d/roboshop.conf
 
 - name: Start Nginx Service
   ansible.builtin.systemd:
