@@ -1,0 +1,14 @@
+- name: Copy Prometheus Config
+  ansible.builtin.template:
+    src: prometheus.yml
+    dest: /opt/prometheus/prometheus.yml
+
+- name: Restart Prometheus Service
+  ansible.builtin.systemd:
+    name: prometheus
+    state: restarted
+
+- name: Check Service is running
+  ansible.builtin.shell: netstat -lntp | grep 9090
+
+

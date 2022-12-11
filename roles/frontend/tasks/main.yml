@@ -1,4 +1,4 @@
-- name: Install Nginx ABCD MY
+- name: Install Nginx
   ansible.builtin.yum:
     name: nginx
     state: installed
@@ -12,11 +12,12 @@
   ansible.builtin.template:
     src: roboshop.conf
     dest: /etc/nginx/default.d/roboshop.conf
+  notify: Restart Nginx Service
 
 - name: Start Nginx Service
   ansible.builtin.systemd:
     name: nginx
-    state: restarted
+    state: started
     enabled: yes
 
 

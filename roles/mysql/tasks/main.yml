@@ -1,12 +1,4 @@
 
-#echo show databases | mysql -uroot -p${ROBOSHOP_MYSQL_PASSWORD} &>>$LOG
-#if [ $? -ne 0 ]
-#then
-#echo "ALTER USER 'root'@'localhost' IDENTIFIED BY '${ROBOSHOP_MYSQL_PASSWORD}';" > /tmp/root-pass-sql
-#DEFAULT_PASSWORD=$(grep 'A temporary password' /var/log/mysqld.log | awk '{print $NF}')
-#cat /tmp/root-pass-sql  | mysql --connect-expired-password -uroot -p"${DEFAULT_PASSWORD}" &>>$LOG
-#fi
-#
 #PRINT "Uninstall Validate Plugin Password"
 #echo "show plugins" |  mysql -uroot -p${ROBOSHOP_MYSQL_PASSWORD} | grep validate_password &>>$LOG
 #if [ $? -eq 0 ]; then
@@ -60,11 +52,44 @@
   ignore_errors: yes
   register: out
 
-- name: debug
-  debug:
-    msg: "{{out}}"
+- name: Change Default Password
+  when: out.failed
+  block:
+    - name: Copy Root Rest Password file
+      ansible.builtin.template:
+        src: root-pass.sql
+        dest: /tmp/root-pass.sql
 
+    - name: Load MySQL Log File
+      ansible.builtin.slurp:
+        src: /var/log/mysqld.log
+      register: mysql_log
 
+    - name: Change Default Password
+      ansible.builtin.shell: mysql --connect-expired-password -uroot -p"{{ mysql_log['content'] | b64decode | regex_findall('temporary password.*') | join(' ') | split(' ') | last }}"  </tmp/root-pass.sql
+
+- name: Get Plugins list
+  community.mysql.mysql_query:
+    login_user: root
+    login_password: "{{ROOT_PASSWORD}}"
+    query: show plugins
+  ignore_errors: yes
+  register: out
+
+- name: Remove Validate Plugin Password
+  community.mysql.mysql_query:
+    login_user: root
+    login_password: "{{ROOT_PASSWORD}}"
+    query: uninstall plugin validate_password
+  when: out | regex_findall('validate_password') | length  > 0
+
+- name: Copy App Usser Setup SQL
+  ansible.builtin.template:
+    src: app-user.sql
+    dest: /tmp/app-user.sql
+
+- name: Create App User in DB
+  ansible.builtin.shell: mysql -uroot -p"{{ ROOT_PASSWORD }}"  </tmp/app-user.sql
 
 
 
